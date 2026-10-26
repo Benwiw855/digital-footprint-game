@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Digital Footprint: Risk Quest</title>
+<style>
+:root{--bg:#0b1020;--panel:#151d34;--panel2:#202b48;--text:#f5f7ff;--muted:#b7c2dc;--accent:#83e1d0;--good:#65d69a;--bad:#ff8585}
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;background:radial-gradient(ellipse at top,#25345a 0%,var(--bg) 58%);font-family:system-ui,-apple-system,Segoe UI,sans-serif;color:var(--text);display:flex;justify-content:center;align-items:center;padding:22px}
+main{width:min(760px,100%);background:rgba(21,29,52,.96);border:1px solid #344363;border-radius:24px;padding:clamp(20px,5vw,38px);box-shadow:0 25px 80px #0006}
+.eyebrow{color:var(--accent);font-size:.8rem;letter-spacing:.15em;text-transform:uppercase;font-weight:800}
+h1{font-size:clamp(2rem,6vw,3.2rem);line-height:1.05;margin:.5rem 0 1rem}
+p{line-height:1.6;color:var(--muted)}
+.top{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.pill{background:#263553;border-radius:999px;padding:8px 13px;font-weight:700;font-size:.9rem}
+.track{height:8px;background:#303b57;border-radius:20px;overflow:hidden;margin:22px 0}
+.fill{height:100%;width:0;background:var(--accent);transition:width .25s}
+h2{font-size:1.35rem;line-height:1.35}
+.answers{display:grid;gap:11px;margin:20px 0}
+button{font:inherit;cursor:pointer}
+.answer{border:1px solid #405071;background:#202b48;color:var(--text);padding:15px 16px;text-align:left;border-radius:14px;line-height:1.45;transition:transform .12s,border-color .12s}
+.answer:hover:not(:disabled){transform:translateY(-2px);border-color:var(--accent)}
+.answer:focus-visible,.primary:focus-visible{outline:3px solid white;outline-offset:3px}
+.answer.correct{border-color:var(--good);background:#173b38}
+.answer.wrong{border-color:var(--bad);background:#452b3b}
+.feedback{border-radius:14px;padding:15px;background:#263553;margin:16px 0;color:var(--text);line-height:1.55}
+.feedback strong{display:block;margin-bottom:4px}
+.primary{background:var(--accent);color:#0b1824;border:0;border-radius:12px;padding:13px 19px;font-weight:800}
+.primary:hover{filter:brightness(1.06)}
+.footer{font-size:.82rem;color:var(--muted);margin-top:22px;border-top:1px solid #344363;padding-top:16px}
+.hidden{display:none}
+.result{text-align:center;padding:10px 0}
+.score{font-size:3.8rem;font-weight:900;color:var(--accent);margin:8px}
+.review{text-align:left;background:#202b48;border-radius:12px;padding:12px 15px;margin:10px 0}
+a{color:var(--accent)}
+@media(max-width:480px){body{padding:10px}main{border-radius:18px}.answer{padding:13px}}
+</style>
+</head>
+<body>
+<main>
+  <div id="game">
+    <div class="top"><span class="eyebrow">Online safety challenge</span><span class="pill" id="counter">Question 1 of 10</span></div>
+    <h1>Digital Footprint:<br>Risk Quest</h1>
+    <p>Every post leaves a trace. Make smart choices, spot online risks and earn points to protect your digital reputation.</p>
+    <div class="top"><span class="pill" id="score">⭐ 0 points</span><span class="pill">10 scenarios</span></div>
+    <div class="track"><div class="fill" id="progress"></div></div>
+    <h2 id="question"></h2>
+    <div class="answers" id="answers"></div>
+    <div id="feedback" class="feedback hidden" aria-live="polite"></div>
+    <button id="next" class="primary hidden">Next question →</button>
+  </div>
+  <div id="results" class="hidden">
+    <div class="result">
+      <div class="eyebrow">Quest complete</div>
+      <h1 id="resultTitle">Great work!</h1>
+      <div class="score" id="finalScore">0/10</div>
+      <p id="resultText"></p>
+    </div>
+    <h2>Answer review</h2>
+    <div id="review"></div>
+    <button class="primary" id="restart">↻ Play again</button>
+  </div>
+  <div class="footer">Tip: If something harmful happens online, save evidence, report it and talk to a trusted adult. In Australia, visit <a href="https://www.esafety.gov.au/" target="_blank" rel="noopener noreferrer">eSafety Commissioner</a> for advice.</div>
+</main>
+<script>
+const questions = [
+ {q:"A stranger messages you asking what school you attend. What is the safest response?",a:["Tell them so they know you better","Don't share it; block or report them if needed","Send a photo of your school uniform"],c:1,why:"School details can reveal where you spend time. Keep personal information private, especially with strangers."},
+ {q:"A friend sends you an embarrassing photo of another student. What should you do?",a:["Forward it to the group chat","Post it but delete it later","Don't share it, and ask your friend to respect their privacy"],c:2,why:"Images can spread quickly and be hard to remove. Respect consent and other people's privacy."},
+ {q:"A giveaway says you must enter your account password to claim a prize. What should you do?",a:["Don't enter it; report the suspicious giveaway","Enter it quickly before the offer ends","Use your school password instead"],c:0,why:"This may be phishing. Never share your password to claim a prize."},
+ {q:"You're angry and want to post a rude comment about a teacher. What's the safest choice?",a:["Post it on a private account","Pause, calm down and handle the issue respectfully","Post it because it will disappear later"],c:1,why:"Private posts can be screenshotted. Pausing can help you avoid sharing something you regret."},
+ {q:"Someone posts your phone number publicly without permission. What should you do?",a:["Post their number in return","Save evidence, report the post and tell a trusted adult","Ignore it even if people contact you"],c:1,why:"Reporting and getting support can help protect your privacy. Don't retaliate by sharing someone else's information."},
+ {q:"You want to upload a holiday photo, but it shows your house number and you're away from home. What is a safer choice?",a:["Post it publicly straight away","Add your exact location to the caption","Crop out identifying details and consider posting after you return"],c:2,why:"Photos can reveal locations and when you're away. Remove identifying details and think carefully about timing."},
+ {q:"A classmate creates a fake account pretending to be you. What should you do first?",a:["Argue with them publicly","Keep screenshots, report the account and tell a trusted adult","Give them your password so they stop"],c:1,why:"Save evidence, report impersonation to the platform and get help. Never share your password."},
+ {q:"An app asks for access to your contacts, microphone and location, even though it doesn't need them for its main feature. What should you do?",a:["Review permissions and deny access it doesn't need","Allow everything without checking","Give it access so it works faster"],c:0,why:"Check app permissions and only allow access that makes sense for the feature you're using."},
+ {q:"You delete an old embarrassing post. Which statement is most accurate?",a:["It is guaranteed to disappear everywhere","Nobody could have seen it","Someone may have saved or screenshotted it before deletion"],c:2,why:"Deleting a post doesn't guarantee every copy disappears. Think before sharing in the first place."},
+ {q:"You receive a message saying your account will be deleted unless you click a link and sign in immediately. What should you do?",a:["Click quickly because it sounds urgent","Don't use the link; check through the official app or website","Forward it to friends so they can try it"],c:1,why:"Urgent messages can be scams. Go directly to the official app or website instead of using an unexpected link."}
+];
+let current=0, score=0, selected=null, history=[];
+const $=id=>document.getElementById(id);
+function render(){
+ const item=questions[current]; selected=null;
+ $("counter").textContent=`Question ${current+1} of ${questions.length}`;
+ $("score").textContent=`⭐ ${score} points`;
+ $("progress").style.width=`${current/questions.length*100}%`;
+ $("question").textContent=item.q;
+ $("answers").innerHTML="";
+ item.a.forEach((answer,i)=>{
+  const b=document.createElement("button"); b.className="answer"; b.textContent=String.fromCharCode(65+i)+". "+answer;
+  b.addEventListener("click",()=>choose(i,b)); $("answers").appendChild(b);
+ });
+ $("feedback").classList.add("hidden"); $("next").classList.add("hidden");
+}
+function choose(i,button){
+ if(selected!==null)return; selected=i;
+ const item=questions[current]; const buttons=[...$("answers").children];
+ buttons.forEach((b,j)=>{b.disabled=true;if(j===item.c)b.classList.add("correct");if(j===i&&i!==item.c)b.classList.add("wrong");});
+ const correct=i===item.c;if(correct)score++;
+ history.push({selected:i,correct});
+ $("score").textContent=`⭐ ${score} points`;
+ $("feedback").classList.remove("hidden");
+ $("feedback").innerHTML=`<strong>${correct?"✓ Correct!":"Not quite — here's why."}</strong>${item.why}`;
+ $("next").textContent=current===questions.length-1?"See my results →":"Next question →";
+ $("next").classList.remove("hidden");
+}
+$("next").addEventListener("click",()=>{
+ current++;
+ if(current<questions.length)render();else showResults();
+});
+function showResults(){
+ $("game").classList.add("hidden");$("results").classList.remove("hidden");
+ $("progress").style.width="100%";$("finalScore").textContent=`${score}/${questions.length}`;
+ $("resultTitle").textContent=score===10?"Digital Safety Champion!":score>=8?"Excellent work!":score>=5?"Good effort!":"Keep practising!";
+ $("resultText").textContent=score===10?"Perfect score — you've made safe choices in every scenario.":score>=8?"You spotted most online risks. Review any missed questions to sharpen your skills.":score>=5?"You're building your online safety skills. Check the explanations and try again.":"Every question is a chance to learn how to protect your privacy and reputation.";
+ $("review").innerHTML="";
+ questions.forEach((q,i)=>{const d=document.createElement("div");d.className="review";d.innerHTML=`<strong>${i+1}. ${history[i].correct?"✓":"✗"} ${q.q}</strong><p style="margin:6px 0">Safest answer: ${q.a[q.c]}</p>`;$("review").appendChild(d);});
+}
+$("restart").addEventListener("click",()=>{current=0;score=0;history=[];$("results").classList.add("hidden");$("game").classList.remove("hidden");render();});
+render();
+</script>
+</body>
+</html>
