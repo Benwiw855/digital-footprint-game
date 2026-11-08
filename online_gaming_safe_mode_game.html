@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Online Gaming: Safe Mode</title>
+<style>
+*{box-sizing:border-box}body{margin:0;padding:24px;font-family:Arial,sans-serif;color:#f3f6ff;background:radial-gradient(circle at top,#294568,#101827 65%);min-height:100vh;display:flex;justify-content:center}main{width:min(820px,100%)}header{text-align:center;margin:10px 0 22px}.tag{color:#63e6e2;font-weight:bold;letter-spacing:2px;font-size:.8rem}h1{font-size:clamp(2rem,6vw,3rem);margin:8px 0}header p,.muted{color:#bdcbe0}.hud{display:flex;gap:10px;margin-bottom:14px;flex-wrap:wrap}.stat{background:#172338;border:1px solid #405675;border-radius:12px;padding:10px 14px;flex:1;min-width:120px}.stat small{display:block;color:#bdcbe0;margin-bottom:5px}.bar{height:9px;background:#394a63;border-radius:20px;overflow:hidden;margin-top:7px}.fill{height:100%;width:100%;background:#8ce6a1;transition:width .3s}.panel{background:#1b2940;border:1px solid #405675;border-radius:20px;padding:clamp(18px,4vw,30px);box-shadow:0 18px 50px #0005}.scene{display:flex;align-items:center;gap:14px;margin-bottom:16px}.emoji{font-size:2.5rem;background:#304765;border-radius:16px;width:70px;height:70px;display:grid;place-items:center;flex-shrink:0}h2{margin:0 0 6px;font-size:1.4rem}.scene p{margin:0;color:#bdcbe0;line-height:1.4}#story{font-size:1.08rem;line-height:1.6}.choices{display:grid;gap:10px;margin-top:20px}button{font:inherit;cursor:pointer;border:1px solid #58708f;border-radius:12px;padding:14px 16px;color:#f3f6ff;background:#2a3d59;text-align:left}button:hover{background:#385477;border-color:#63e6e2}.choice strong{display:block;color:#63e6e2;margin-bottom:4px}.primary{background:#63e6e2;color:#10212a;border:0;font-weight:bold;text-align:center}.feedback{margin-top:16px;padding:14px;border-radius:12px;line-height:1.5;background:#132f35;border:1px solid #34716d}.feedback.warn{background:#38272b;border-color:#8b5057}.hidden{display:none}.bottom{display:flex;justify-content:space-between;gap:10px;align-items:center;margin-top:18px;flex-wrap:wrap}.small,footer{color:#bdcbe0;font-size:.85rem}.ending{text-align:center}.pill{display:inline-block;border:1px solid #607b9c;border-radius:99px;padding:7px 11px;color:#ffd166;font-size:.85rem;margin:5px}footer{text-align:center;margin:16px 0}
+</style></head>
+<body><main>
+<header><div class="tag">INTERACTIVE STORY GAME</div><h1>🎮 ONLINE GAMING: SAFE MODE</h1><p>Make choices, handle situations and protect your gaming experience.</p></header>
+<div class="hud"><div class="stat"><small>MISSION</small><strong id="level">1 / 5</strong></div><div class="stat"><small>SAFETY SHIELD</small><strong id="shieldText">100%</strong><div class="bar"><div class="fill" id="shield"></div></div></div><div class="stat"><small>SAFE TOKENS</small><strong id="tokens">0</strong></div></div>
+<section class="panel">
+<div class="scene"><div class="emoji" id="emoji">🕹️</div><div><h2 id="title">Welcome to the game hub</h2><p id="subtitle">Your choices shape your adventure.</p></div></div>
+<div id="story">You've logged into your favourite multiplayer game. Your mission is to enjoy playing while protecting your account, privacy and wellbeing. Choose what you would do in each situation.</div>
+<div class="choices" id="choices"><button class="primary" onclick="startGame()">START GAME ▶</button></div>
+<div id="feedback" class="feedback hidden" aria-live="polite"></div>
+<div class="bottom"><span class="small" id="progress">5 missions • A choose-your-path adventure</span><button id="continue" class="hidden" onclick="nextScene()">Continue →</button></div>
+</section><footer>Tip: You can block and report players, leave uncomfortable chats and ask a trusted adult for help.</footer>
+</main>
+<script>
+const scenes=[
+{emoji:"💬",title:"A player sends you a message",sub:"Mission 1: Protect your privacy",story:"A player you don't know asks for your full name, school and suburb so you can meet up in real life. What do you do?",choices:[
+["Share the details so you can become friends","Sharing personal details can reveal where to find you. Your safety shield takes a hit.",-35,0],
+["Keep your details private and stop replying","Good move. Keep personal information private. Never arrange to meet someone from a game on your own.",0,2],
+["Ask them to send their details first","Swapping personal information still puts both people at risk. It's safer not to share it.",-15,0]]},
+{emoji:"🎁",title:"A free reward appears",sub:"Mission 2: Spot a suspicious link",story:"A pop-up promises free game currency. It asks you to sign in on a website that looks slightly different from the official game site. What now?",choices:[
+["Open the link and enter your password","A fake sign-in page can steal your account details. Close it and never enter your password through an unexpected link.",-35,0],
+["Ignore it and use the official game store","Nice choice. Use official websites and stores, and be suspicious of rewards that seem too good to be true.",0,2],
+["Send the link to friends to see if it works","That could spread the scam to other players. Don't forward suspicious links; warn friends instead.",-15,0]]},
+{emoji:"🎧",title:"Voice chat turns nasty",sub:"Mission 3: Deal with bullying",story:"A player keeps insulting you through voice chat. Other players are laughing. What do you do?",choices:[
+["Insult them back and keep arguing","Arguing can make the situation worse. You don't have to stay in a chat where someone is bullying you.",-20,0],
+["Mute, block and report the player","You used the game's safety tools. Tell a trusted adult if it continues.",0,2],
+["Leave the match and take a break","Leaving is a completely valid choice. Your wellbeing matters more than finishing a match.",0,2]]},
+{emoji:"🌙",title:"One more match?",sub:"Mission 4: Look after your wellbeing",story:"You planned to play for 30 minutes, but it is getting late. You have homework and need to get ready for bed. Your team asks you to stay. What do you choose?",choices:[
+["Keep playing and ignore everything else","Missing sleep or responsibilities regularly can affect your wellbeing. Set a stopping time before you start playing.",-20,0],
+["Tell your team you're logging off","Great balance. Breaks help you make time for sleep, schoolwork and other activities.",0,2],
+["Ask your team to respect your stopping time","You can ask friends to support your plan, but make your own stopping time too.",0,1]]},
+{emoji:"🔒",title:"Secure your gaming account",sub:"Mission 5: Lock down your account",story:"Your account settings are public, and you use the same password for several apps and games. How do you improve security?",choices:[
+["Keep everything as it is","Public details and reused passwords can make accounts easier to target. Review your privacy settings.",-25,0],
+["Use a unique password and two-step verification","Strong choice. A unique password and two-step verification add extra protection to your account.",0,2],
+["Give a friend your password to watch your account","Even trusted friends should not need your password. Keep login details private.",-20,0]]}
+];
+let current=0,shield=100,tokens=0,chosen=false;
+const el=id=>document.getElementById(id);
+function update(){el("level").textContent=Math.min(current+1,5)+" / 5";el("shieldText").textContent=shield+"%";el("shield").style.width=shield+"%";el("shield").style.background=shield>60?"#8ce6a1":shield>30?"#ffd166":"#ff7777";el("tokens").textContent=tokens}
+function startGame(){current=0;shield=100;tokens=0;render()}
+function render(){chosen=false;let s=scenes[current];el("emoji").textContent=s.emoji;el("title").textContent=s.title;el("subtitle").textContent=s.sub;el("story").textContent=s.story;el("feedback").className="feedback hidden";el("continue").classList.add("hidden");el("continue").textContent=current===4?"See results →":"Continue →";el("progress").textContent="Mission "+(current+1)+" of 5";el("choices").innerHTML="";s.choices.forEach((c,i)=>{let b=document.createElement("button");b.className="choice";let strong=document.createElement("strong");strong.textContent="CHOICE "+(i+1);b.append(strong,document.createTextNode(c[0]));b.onclick=()=>choose(i);el("choices").appendChild(b)});update()}
+function choose(i){if(chosen)return;chosen=true;let c=scenes[current].choices[i];shield=Math.max(0,Math.min(100,shield+c[2]));tokens+=c[3];update();el("choices").innerHTML="";el("feedback").textContent=c[1];el("feedback").className="feedback"+(c[2]<0?" warn":"");el("continue").classList.remove("hidden")}
+function nextScene(){if(current<4){current++;render()}else finish()}
+function finish(){el("emoji").textContent=shield>=70?"🏆":"🛡️";el("title").textContent=shield>=70?"Safe Mode Champion!":"Mission Complete!";el("subtitle").textContent="You completed all five missions.";el("story").innerHTML="You earned <b>"+tokens+" safe tokens</b> and finished with <b>"+shield+"% safety shield</b>. Remember: protect your details, avoid suspicious links, block and report bullying, secure your account and balance gaming with breaks.";el("choices").innerHTML='<div class="pill">🔐 Protect your details</div><div class="pill">🚫 Block and report bullying</div><div class="pill">🔗 Avoid suspicious links</div><div class="pill">🌙 Take regular breaks</div><div class="pill">🛡️ Secure your account</div>';let b=document.createElement("button");b.className="primary";b.textContent="PLAY AGAIN ↻";b.onclick=startGame;el("choices").appendChild(b);el("feedback").className="feedback hidden";el("continue").classList.add("hidden");el("progress").textContent="Adventure completed";update()}
+</script></body></html>
